@@ -1,86 +1,51 @@
 import { EventEmitter } from 'events';
 import dispatcher from './dispatcher'
-import axios from 'axios'
-
-// var instance = axios.create({
-//   baseURL: 'http://localhost:3001/',
-//   timeout: 1000,
-// });
-// var api = []
-
-// var instance = axios.create({
-//   baseURL: 'http://localhost:3001/',
-//   timeout: 1000,
-// });
-// var api = null
-// instance.get('/todos')
-//   .then(function (response) {
-//       console.log(response.data);
-//       api = response.data
-//       console.log(api)
-//     })
-
 
 class TodoStore extends EventEmitter {
   constructor() {
     super();
     this.state = []
-    var instance = axios.create({
-      baseURL: 'http://localhost:3001/',
-      timeout: 1000,
-    });
-    instance.get('/todos').then(function (response) {
-          console.log(response.data);
-          this.state.setState(response.data)
-        })
-
-    // [
-    //   {
-    //     id: 113464613,
-    //     text: "Go Shopping",
-    //     complete: false
-    //   },
-    //   {
-    //     id: 235684679,
-    //     text: "Pay Water Bill",
-    //     complete: false
-    //   },]
-  }
-
-  getAll() {
-    return this.state;
-  }
-
-  createTodo(text) {
-    const id = Date.now();
-
-    this.state.push({
-      id,
-      text,
-      complete: false,
-    });
-
-    this.emit("change");
-  }
-
-  deleteTodo(id) {
-    console.log({id})
-    this.state = this.state.filter(function(el){ return el.id != id })
-
-    this.emit("change")
+    this.getApiState = this.getApiState.bind(this)
   }
 
   handleAction(action) {
     switch(action.type) {
       case "CREATE_TODO": {
-        this.createTodo(action.text);
+        this.createTodo(action.text, action.id);
         break;
       }
       case "DELETE_TODO": {
         this.deleteTodo(action.id);
         break;
       }
+      case "SET_INIT_STATE": {
+        this.getApiState(action.apiDataList);
+        break;
+      }
     }
+  }
+
+  getApiState(apiDataList) {
+    this.state = apiDataList;
+    this.emit("change");
+  }
+
+  getAll() {
+    return this.state;
+  }
+
+  createTodo(text, id) {
+    this.state.push({
+      id,
+      text,
+      complete: false,
+    });
+    this.emit("change");
+  }
+
+  deleteTodo(id) {
+    this.state = this.state.filter(function(el){ return el.id !== id })
+    this.emit("change")
   }
 }
 

@@ -59,7 +59,8 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    TodoStore.on("change", this.getTodos)
+    TodoStore.on("change", this.getTodos);
+    todoActions.getApi()
   }
 
   componentWillUnmount() {
@@ -74,7 +75,6 @@ class App extends React.Component {
 
   render() {
     const { todos } = this.state;
-
     const TodoComponents = todos.map((todo) => {
       return <Todo key={todo.id} {...todo}/>;   //text={todo.text}
     });
