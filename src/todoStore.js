@@ -37,8 +37,7 @@ class TodoStore extends EventEmitter {
   createTodo(text, id) {
     this.state.push({
       id,
-      text,
-      complete: false,
+      text
     });
     this.emit("change");
   }

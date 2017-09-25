@@ -8,8 +8,7 @@ export function createTodo(text) {
     url: 'http://localhost:3001/todos/',
     data: {
       id: id,
-      text: text,
-      complete: false
+      text: text
     }
   }).then(function (response) {
     dispatcher.dispatch({
